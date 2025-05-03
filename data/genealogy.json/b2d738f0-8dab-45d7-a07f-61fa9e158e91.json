@@ -1,0 +1,13 @@
+{
+  "id": "b2d738f0-8dab-45d7-a07f-61fa9e158e91",
+  "name": "folong zidane",
+  "description": "etudiant a Polytechnique Yaounde",
+  "createdAt": "2025-05-03T05:58:23.260Z",
+  "updatedAt": "2025-05-03T05:58:23.260Z",
+  "members": [],
+  "memberIndexMap": {},
+  "relationMatrix": {
+    "size": 0,
+    "values": []
+  }
+}

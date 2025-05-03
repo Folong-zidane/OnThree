@@ -1,16 +1,10 @@
+// routes/index.ts
 import { Router } from 'express';
-import createGenealogyRoutes from './genealogyRoutes';
-import GenealogyController from '../controllers/genealogyController';
-import GenealogyService from '../services/genealogyServices';
-import path from 'path';
-
+import genealogyRoutes from './genealogyRoutes';
+import familyRoutes from './familyRoutes';
 const router = Router();
 
-// Création des instances avec dépendances
-const genealogyService = new GenealogyService(path.join(__dirname, '../../data/genealogy.json'));
-const genealogyController = new GenealogyController(genealogyService);
-
 // Montage des routes
-router.use('/api/genealogy', createGenealogyRoutes(genealogyController));
-
+router.use('/api/genealogy', genealogyRoutes);
+router.use('/api/genealogy',familyRoutes);
 export default router;

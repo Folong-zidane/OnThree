@@ -1,54 +1,95 @@
+// utils/fileManager.ts
 import fs from 'fs/promises';
 import path from 'path';
 import { GenealogyData } from '../models/familyMember';
+import { Family } from '../models/family';
 import logger from './logger';
 
 class FileManager {
-    private filePath: string;
+  private baseDir: string;
 
-    constructor(filePath: string) {
-        this.filePath = filePath;
-        this.initialize();
+  constructor(baseDir: string) {
+    this.baseDir = baseDir;
+    this.initialize();
+  }
+
+  // Initialisation du répertoire s'il n'existe pas
+  private async initialize(): Promise<void> {
+    try {
+      await fs.access(this.baseDir);
+    } catch (error) {
+      logger.info(`Création du répertoire ${this.baseDir}`);
+      await fs.mkdir(this.baseDir, { recursive: true });
     }
+  }
 
-    // Initialisation du fichier s'il n'existe pas
-    private async initialize(): Promise<void> {
+  private getFamilyFilePath(familyId: string): string {
+    return path.join(this.baseDir, `${familyId}.json`);
+  }
+
+  async familyExists(familyId: string): Promise<boolean> {
+    try {
+      await fs.access(this.getFamilyFilePath(familyId));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async readFamilyFile(familyId: string): Promise<Family> {
+    try {
+      const filePath = this.getFamilyFilePath(familyId);
+      const data = await fs.readFile(filePath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      logger.error(`Erreur de lecture de la famille ${familyId}:`, error);
+      throw new Error(`Famille non trouvée: ${familyId}`);
+    }
+  }
+
+  async writeFamilyFile(family: Family): Promise<void> {
+    try {
+      const filePath = this.getFamilyFilePath(family.id);
+      await fs.writeFile(filePath, JSON.stringify(family, null, 2));
+    } catch (error) {
+      logger.error(`Erreur d'écriture pour la famille ${family.id}:`, error);
+      throw new Error(`Erreur lors de l'écriture du fichier: ${(error as Error).message}`);
+    }
+  }
+
+  async getAllFamilies(): Promise<Family[]> {
+    try {
+      const files = await fs.readdir(this.baseDir);
+      const familyFiles = files.filter(file => file.endsWith('.json'));
+      
+      const families: Family[] = [];
+      for (const file of familyFiles) {
+        const familyId = path.basename(file, '.json');
         try {
-            await fs.access(this.filePath);
+          const family = await this.readFamilyFile(familyId);
+          families.push(family);
         } catch (error) {
-            logger.info(`Création du fichier ${this.filePath}`);
-            await this.ensureDirectoryExists();
-            await fs.writeFile(this.filePath, JSON.stringify({ members: [] }, null, 2));
+          logger.error(`Erreur de lecture du fichier ${file}:`, error);
         }
+      }
+      
+      return families;
+    } catch (error) {
+      logger.error('Erreur de lecture des familles:', error);
+      return [];
     }
+  }
 
-    private async ensureDirectoryExists(): Promise<void> {
-        const directory = path.dirname(this.filePath);
-        try {
-            await fs.access(directory);
-        } catch (error) {
-            await fs.mkdir(directory, { recursive: true });
-        }
+  async deleteFamilyFile(familyId: string): Promise<boolean> {
+    try {
+      const filePath = this.getFamilyFilePath(familyId);
+      await fs.unlink(filePath);
+      return true;
+    } catch (error) {
+      logger.error(`Erreur de suppression de la famille ${familyId}:`, error);
+      return false;
     }
-
-    async readFile(): Promise<GenealogyData> {
-        try {
-            const data = await fs.readFile(this.filePath, 'utf-8');
-            return JSON.parse(data);
-        } catch (error) {
-            logger.error('Erreur de lecture:', error);
-            return { members: [] };
-        }
-    }
-
-    async writeFile(data: GenealogyData): Promise<void> {
-        try {
-            await fs.writeFile(this.filePath, JSON.stringify(data, null, 2));
-        } catch (error) {
-            logger.error('Erreur d\'écriture:', error);
-            throw new Error(`Erreur lors de l'écriture du fichier: ${(error as Error).message}`);
-        }
-    }
+  }
 }
 
 export default FileManager;

@@ -1,0 +1,86 @@
+{
+  "id": "e5013e8f-f1b1-425d-b789-ef280da55c8e",
+  "name": "groupe Ro zidane",
+  "description": " les etudiantes de  Polytechnique Yaounde",
+  "createdAt": "2025-05-03T07:15:47.465Z",
+  "updatedAt": "2025-05-03T08:19:17.104Z",
+  "members": [
+    {
+      "id": "298cf8bb-5715-4608-8e6b-6e0b56beb331",
+      "familyId": "e5013e8f-f1b1-425d-b789-ef280da55c8e",
+      "firstName": "Zinedine",
+      "lastName": "Zidane",
+      "birthDate": "1972-06-23",
+      "gender": "MALE",
+      "parents": [
+        "8daedff9-3f16-41fe-9448-de5ae051d21e"
+      ],
+      "children": [],
+      "spouse": null,
+      "metadata": {
+        "profession": "Football player",
+        "nationality": "French"
+      }
+    },
+    {
+      "id": "7e3695f1-955a-4ca8-9f67-f8811291e8b8",
+      "familyId": "e5013e8f-f1b1-425d-b789-ef280da55c8e",
+      "firstName": "folong",
+      "lastName": "Zidane",
+      "birthDate": "1972-06-23",
+      "gender": "MALE",
+      "parents": [
+        "8daedff9-3f16-41fe-9448-de5ae051d21e"
+      ],
+      "children": [],
+      "spouse": "8daedff9-3f16-41fe-9448-de5ae051d21e",
+      "metadata": {
+        "profession": "Football player",
+        "nationality": "French"
+      }
+    },
+    {
+      "id": "8daedff9-3f16-41fe-9448-de5ae051d21e",
+      "familyId": "e5013e8f-f1b1-425d-b789-ef280da55c8e",
+      "firstName": "groupe",
+      "lastName": "Zidane",
+      "birthDate": "1972-06-23",
+      "gender": "MALE",
+      "parents": [],
+      "children": [
+        "7e3695f1-955a-4ca8-9f67-f8811291e8b8",
+        "298cf8bb-5715-4608-8e6b-6e0b56beb331"
+      ],
+      "spouse": "7e3695f1-955a-4ca8-9f67-f8811291e8b8",
+      "metadata": {
+        "profession": "Football player",
+        "nationality": "French"
+      }
+    }
+  ],
+  "memberIndexMap": {
+    "298cf8bb-5715-4608-8e6b-6e0b56beb331": 0,
+    "7e3695f1-955a-4ca8-9f67-f8811291e8b8": 1,
+    "8daedff9-3f16-41fe-9448-de5ae051d21e": 2
+  },
+  "relationMatrix": {
+    "size": 3,
+    "values": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        1,
+        0
+      ]
+    ]
+  }
+}

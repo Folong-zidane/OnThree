@@ -1,26 +1,35 @@
-import { Router } from 'express';
-import GenealogyController from '../controllers/genealogyController';
-import { validateMember, validateId, validateRelation, validateDepth } from '../middleware/validator';
+// routes/genealogyRoutes.ts
+import express from 'express';
+import * as GenealogyController from '../controllers/genealogyController';
+import {
+  validateMember,
+  validateId,
+  validateRelation,
+  validateDepth,
+} from '../middleware/validator';
 
-const createGenealogyRoutes = (genealogyController: GenealogyController) => {
-    const router = Router();
+const router = express.Router();
 
-    // Routes pour les membres
-    router.get('/', genealogyController.getAllMembers);
-    router.post('/', validateMember, genealogyController.createMember);
-    router.get('/search', genealogyController.searchMembers);
-    
-    router.post('/relation', validateRelation, genealogyController.addRelation);
-    
-    router.get('/:id', validateId, genealogyController.getMemberById);
-    router.put('/:id', validateId, validateMember, genealogyController.updateMember);
-    router.delete('/:id', validateId, genealogyController.deleteMember);
-    
-    // Routes pour les requêtes généalogiques
-    router.get('/:id/ancestors', validateId, validateDepth, genealogyController.getAncestors);
-    router.get('/:id/descendants', validateId, validateDepth, genealogyController.getDescendants);
+// Routes pour la gestion des familles
+router.get('/families', GenealogyController.getAllFamilies);
+router.get('/families/:id', GenealogyController.getFamilyById);
+router.post('/families', GenealogyController.createFamily);
+router.put('/families/:id', GenealogyController.updateFamily);
+router.delete('/families/:id', GenealogyController.deleteFamily);
 
-    return router;
-};
+// Routes pour la gestion des membres
+router.get('/families/:familyId/members', GenealogyController.getAllMembersOfFamily);
+router.get('/families/:familyId/members/:memberId', GenealogyController.getMemberById);
+router.post('/families/:familyId/members', validateMember, GenealogyController.addMemberToFamily);
+router.put('/families/:familyId/members/:memberId', GenealogyController.updateMember);
+router.delete('/families/:familyId/members/:memberId', GenealogyController.removeMember);
 
-export default createGenealogyRoutes;
+// Routes pour les relations familiales
+router.post('/families/:familyId/relations', GenealogyController.addRelation);
+router.delete('/families/:familyId/relations', GenealogyController.removeRelation);
+
+// Routes pour les algorithmes de graphe
+router.get('/families/:familyId/spanning-tree', GenealogyController.findMinimumSpanningTree);
+router.get('/families/:familyId/subfamilies', GenealogyController.identifySubfamilies);
+
+export default router;
